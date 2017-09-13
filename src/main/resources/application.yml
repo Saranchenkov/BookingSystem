@@ -1,0 +1,7 @@
+server:
+  port: 8080
+  context-path: /
+spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
