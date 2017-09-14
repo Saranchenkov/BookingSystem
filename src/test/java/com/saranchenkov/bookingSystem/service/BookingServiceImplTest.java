@@ -32,9 +32,4 @@ public class BookingServiceImplTest {
     public void getCalendars() throws Exception {
         Assert.assertEquals(CALENDARS, service.getCalendars());
     }
-
-    @Test
-    public void getSuccessfulRequests() throws Exception {
-        Assert.assertEquals(SUCCESSFUL_REQUESTS, service.getSuccessfulRequests());
-    }
 }

@@ -4,14 +4,14 @@ import com.saranchenkov.bookingSystem.model.input.Batch;
 import com.saranchenkov.bookingSystem.model.input.BookingRequest;
 import com.saranchenkov.bookingSystem.model.output.Booking;
 import com.saranchenkov.bookingSystem.model.output.BookingCalendar;
-import com.saranchenkov.bookingSystem.util.DateTimeUtil;
+import com.saranchenkov.bookingSystem.util.BookingUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.saranchenkov.bookingSystem.util.DateTimeUtil.*;
+import static com.saranchenkov.bookingSystem.util.BookingUtil.*;
 
 @Service
 public class BookingServiceImpl implements BookingService{
@@ -27,60 +27,44 @@ public class BookingServiceImpl implements BookingService{
     }
 
     /**
-     * Groups by date and sorts in chronological order.
      * Returns list of successful {@link BookingCalendar} with {@link Booking} being
      * grouped chronologically by day.
      *
+     * Step 1: filter requests that fall outside office hours, sort by
+     *         {@link BookingRequest#submissionTime} and group chronologically
+     *         by {@link BookingRequest#getMeetingDate()}
+     * Step 2: remove booking requests having meeting time overlap
+     * Step 3: convert collection to list of {@link BookingCalendar} and sort it
+     *         chronologically by {@link BookingCalendar#meetingDate}
+     *
      * @return list of successful {@link BookingCalendar} with bookings being
      *         grouped chronologically by day.
+     * @see BookingUtil#nonFallOutsideOfficeHours(BookingRequest, Batch)
+     * @see BookingUtil#removeBookingsWithOverlaps(List)
+     * @see BookingUtil#convertToBookingList(List)
      */
-    @Override
+
     public List<BookingCalendar> getCalendars(){
         if (Objects.isNull(batch)) return Collections.emptyList();
-        List<BookingRequest> successfulRequests = getSuccessfulRequests();
-        Map<LocalDate, List<BookingRequest>> reqByDate = successfulRequests
+
+        // Step 1
+        Map<LocalDate, List<BookingRequest>> requestsByDate = batch.getRequests()
                 .stream()
+                .filter(request -> nonFallOutsideOfficeHours(request, batch))
+                .sorted(Comparator.comparing(BookingRequest::getSubmissionTime))
                 .collect(Collectors.groupingBy(BookingRequest::getMeetingDate, Collectors.toList()));
 
-        List<BookingCalendar> calendars = reqByDate.entrySet()
-                                                .stream()
-                                                .map(entry -> new BookingCalendar(entry.getKey(), convertToSortedBookingList(entry.getValue())))
-                                                .sorted(Comparator.comparing(BookingCalendar::getMeetingDate))
-                                                .collect(Collectors.toList());
-        return calendars;
-    }
+        // Step 2
+        requestsByDate.entrySet()
+                .forEach(entry -> removeBookingsWithOverlaps(entry.getValue()));
 
-    /**
-     * Returns list of successful {@link BookingRequest} sorted in chronological order
-     * by request submission time.
-     * The booking request is successful under the following conditions:
-     * - No part of a meeting may fall outside office hours
-     * - Meetings may not overlap
-     *
-     * @return list of succesfull {@link BookingRequest} sorted in chronological order
-     *         by request submission time
-     * @see DateTimeUtil#checkFallOutsideOfficeHours(BookingRequest, Batch)
-     * @see DateTimeUtil#nonOverlap(BookingRequest, BookingRequest)
-     */
-    @Override
-    public List<BookingRequest> getSuccessfulRequests(){
-        if (Objects.isNull(batch)) return Collections.emptyList();
+        // Step 3
+        List<BookingCalendar> calendars = requestsByDate.entrySet()
+                .stream()
+                .map(entry -> new BookingCalendar(entry.getKey(), convertToBookingList(entry.getValue())))
+                .sorted(Comparator.comparing(BookingCalendar::getMeetingDate))
+                .collect(Collectors.toList());
 
-        List<BookingRequest> requests = batch.getRequests();
-        requests.sort(Comparator.comparing(BookingRequest::getSubmissionTime));
-        List<BookingRequest> successfulRequests = new ArrayList<>();
-
-outer:  for (BookingRequest request : requests) {
-           if (checkFallOutsideOfficeHours(request, batch)) continue;
-           if (successfulRequests.isEmpty()) {
-               successfulRequests.add(request);
-           } else {
-               for (BookingRequest successfulRequest : successfulRequests) {
-                   if (!nonOverlap(request, successfulRequest)) continue outer;
-               }
-               successfulRequests.add(request);
-           }
-       }
-       return successfulRequests;
+       return calendars;
     }
 }
