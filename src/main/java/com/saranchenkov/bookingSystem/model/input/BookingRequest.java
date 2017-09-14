@@ -1,17 +1,10 @@
 package com.saranchenkov.bookingSystem.model.input;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.saranchenkov.bookingSystem.model.output.Booking;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Created by Ivan on 13.09.2017.
- */
-
-@Component
 public class BookingRequest {
     private String employeeId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -32,10 +25,6 @@ public class BookingRequest {
 
     public LocalDate getMeetingDate(){
         return meetingStartTime.toLocalDate();
-    }
-
-    public Booking convertToBooking(){
-        return new Booking(employeeId, meetingStartTime.toLocalTime(), meetingStartTime.toLocalTime().plusHours(duration));
     }
 
     public String getEmployeeId() {
@@ -68,5 +57,27 @@ public class BookingRequest {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BookingRequest)) return false;
+
+        BookingRequest that = (BookingRequest) o;
+
+        if (duration != that.duration) return false;
+        if (!employeeId.equals(that.employeeId)) return false;
+        if (!submissionTime.equals(that.submissionTime)) return false;
+        return meetingStartTime.equals(that.meetingStartTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = employeeId.hashCode();
+        result = 31 * result + submissionTime.hashCode();
+        result = 31 * result + meetingStartTime.hashCode();
+        result = 31 * result + duration;
+        return result;
     }
 }

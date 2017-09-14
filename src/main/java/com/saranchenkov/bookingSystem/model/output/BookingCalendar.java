@@ -1,15 +1,10 @@
 package com.saranchenkov.bookingSystem.model.output;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Created by Ivan on 13.09.2017.
- */
-@Component
 public class BookingCalendar {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -38,5 +33,23 @@ public class BookingCalendar {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BookingCalendar)) return false;
+
+        BookingCalendar that = (BookingCalendar) o;
+
+        if (!meetingDate.equals(that.meetingDate)) return false;
+        return bookings.equals(that.bookings);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = meetingDate.hashCode();
+        result = 31 * result + bookings.hashCode();
+        return result;
     }
 }

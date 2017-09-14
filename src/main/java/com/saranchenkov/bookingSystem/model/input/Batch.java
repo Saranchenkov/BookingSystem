@@ -1,16 +1,10 @@
 package com.saranchenkov.bookingSystem.model.input;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.List;
 
-/**
- * Created by Ivan on 13.09.2017.
- */
-
-@Component
 public class Batch {
 
     @JsonFormat(pattern = "HH:mm")

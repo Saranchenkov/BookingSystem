@@ -4,30 +4,30 @@ import com.saranchenkov.bookingSystem.model.input.Batch;
 import com.saranchenkov.bookingSystem.model.output.BookingCalendar;
 import com.saranchenkov.bookingSystem.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Created by Ivan on 13.09.2017.
- */
 @RestController
-public class Controller {
+public class BookingController {
 
     private final BookingService service;
 
     @Autowired
-    public Controller(BookingService service) {
+    public BookingController(BookingService service) {
         this.service = service;
     }
 
     @GetMapping
-    public List<BookingCalendar> getCalendars(){
-        return service.getCalendars();
+    public ResponseEntity<List<BookingCalendar>> getCalendars(){
+        return ResponseEntity.ok(service.getCalendars());
     }
 
     @PostMapping
-    public void putBatch(@RequestBody Batch batch){
+    public ResponseEntity<?> putBatch(@RequestBody Batch batch){
         service.setBatch(batch);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
