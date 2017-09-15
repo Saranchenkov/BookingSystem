@@ -28,12 +28,12 @@ public class BookingServiceImpl implements BookingService{
 
     /**
      * Returns list of successful {@link BookingCalendar} with {@link Booking} being
-     * grouped chronologically by day.
+     * grouped chronologically by day.<br>
      *
      * Step 1: filter requests that fall outside office hours, sort by
      *         {@link BookingRequest#submissionTime} and group chronologically
-     *         by {@link BookingRequest#getMeetingDate()}
-     * Step 2: remove booking requests having meeting time overlap
+     *         by {@link BookingRequest#getMeetingDate()} <br>
+     * Step 2: remove booking requests having meeting time overlap <br>
      * Step 3: convert collection to list of {@link BookingCalendar} and sort it
      *         chronologically by {@link BookingCalendar#meetingDate}
      *

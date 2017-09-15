@@ -5,6 +5,10 @@ import com.saranchenkov.bookingSystem.model.input.BookingRequest;
 
 import java.time.LocalTime;
 
+/**
+ * Represents booking, consisting of employee id, meeting start time and
+ * meeting end time.
+ */
 public class Booking {
 
     String employeeId;

@@ -13,8 +13,8 @@ public interface BookingService {
     /**
      * Returns list of successful {@link BookingCalendar} with {@link Booking}
      * being grouped chronologically by day.
-     * The booking calendar is successful under the following conditions:
-     * - No part of a meeting may fall outside office hours
+     * The booking calendar is successful under the following conditions: <br>
+     * - No part of a meeting may fall outside office hours <br>
      * - Meetings may not overlap
      *
      * @return list of successful {@link BookingCalendar} with bookings being

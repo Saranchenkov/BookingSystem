@@ -5,6 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Represents booking calendar for one day, consisting of meeting date and
+ * list of bookings for this date.
+ *
+ * @see Booking
+ */
 public class BookingCalendar {
 
     @JsonFormat(pattern = "yyyy-MM-dd")

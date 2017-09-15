@@ -65,7 +65,7 @@ public final class BookingUtil {
      * @param request1 the first {@code BookingRequest} object
      * @param request2 the second {@code BookingRequest} object to be checked for overlap
      *        with {@code request1}
-     * @return {@code true} if overlap is not exist and {@code false} otherwise
+     * @return {@code true} if overlap doesn't occurs and {@code false} otherwise
      */
     public static boolean nonOverlap(BookingRequest request1, BookingRequest request2){
         if (!request1.getMeetingDate().equals(request2.getMeetingDate())) return true;

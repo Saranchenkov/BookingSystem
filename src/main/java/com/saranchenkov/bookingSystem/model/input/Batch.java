@@ -5,6 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Represents batch of booking requests, consisting of start and end
+ * of office hours and list of booking requests
+ *
+ * @see BookingRequest
+ */
 public class Batch {
 
     @JsonFormat(pattern = "HH:mm")

@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Represents booking request, consisting of employee id, request submission
+ * time, meeting start time and meeting duration in hours.
+ */
 public class BookingRequest {
     private String employeeId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
